@@ -40,10 +40,7 @@ class Point
 end
 
 class Waypoint
-
-
-
-attr_reader :lat, :lon, :ele, :name, :type
+  attr_accessor :lat, :lon, :ele, :name, :type
 
   def initialize(lon, lat, ele=nil, name=nil, type=nil)
     @lat = lat
@@ -55,53 +52,45 @@ attr_reader :lat, :lon, :ele, :name, :type
 
   def get_waypoint_json(indent=0)
     j = '{"type": "Feature",'
-    # if name is not nil or type is not nil
     j += '"geometry": {"type": "Point","coordinates": '
     j += "[#{@lon},#{@lat}"
-    if ele != nil
-      j += ",#{@ele}"
-    end
+    j += ",#{@ele}" if ele
     j += ']},'
-    if name != nil or type != nil
+    if name || type
       j += '"properties": {'
-      if name != nil
-        j += '"title": "' + @name + '"'
-      end
-      if type != nil  # if type is not nil
-        if name != nil
-          j += ','
-        end
-        j += '"icon": "' + @type + '"'  # type is the icon
-      end
+      properties = []
+      properties << '"title": "' + @name + '"' if name
+      properties << '"icon": "' + @type + '"' if type
+      j += properties.join(',')
       j += '}'
     end
     j += "}"
-    return j
+    j
   end
 end
 
 class World
-def initialize(name, things)
-  @name = name
-  @features = things
-end
+  attr_accessor :name, :features
+
+  def initialize(name, things)
+    @name = name
+    @features = things
+  end
+
   def add_feature(f)
-    @features.append(t)
+    @features.push(f)
   end
 
   def to_geojson(indent=0)
-    # Write stuff
     s = '{"type": "FeatureCollection","features": ['
-    @features.each_with_index do |f,i|
-      if i != 0
-        s +=","
-      end
-        if f.class == Track
-            s += f.get_track_json
-        elsif f.class == Waypoint
-            s += f.get_waypoint_json
+    features_json = @features.map do |f|
+      if f.is_a? Track
+        f.get_track_json
+      elsif f.is_a? Waypoint
+        f.get_waypoint_json
       end
     end
+    s += features_json.join(',')
     s + "]}"
   end
 end
