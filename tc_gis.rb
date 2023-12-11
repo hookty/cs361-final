@@ -2,21 +2,30 @@ require_relative 'gis.rb'
 require 'json'
 require 'test/unit'
 
+EXAMPLE_JSONS = [
+  '{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}}',
+  '{"type": "Feature","properties": {"icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}',
+  '{"type": "Feature","properties": {"title": "store"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}',
+  '{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}}',
+  '{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}',
+  '{"type": "FeatureCollection","features": [{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}},{"type": "Feature","properties": {"title": "store","icon": "dot"},"geometry": {"type": "Point","coordinates": [-121.5,45.6]}},{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}},{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}]}',
+]
+
 class TestGis < Test::Unit::TestCase
 
   def test_waypoints
     w = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
-    expected = JSON.parse('{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}}')
+    expected = JSON.parse(EXAMPLE_JSONS[0])
     result = JSON.parse(w.get_waypoint_json)
     assert_equal(result, expected)
 
     w = Waypoint.new(-121.5, 45.5, nil, nil, "flag")
-    expected = JSON.parse('{"type": "Feature","properties": {"icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
+    expected = JSON.parse(EXAMPLE_JSONS[1])
     result = JSON.parse(w.get_waypoint_json)
     assert_equal(result, expected)
 
     w = Waypoint.new(-121.5, 45.5, nil, "store", nil)
-    expected = JSON.parse('{"type": "Feature","properties": {"title": "store"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
+    expected = JSON.parse(EXAMPLE_JSONS[2])
     result = JSON.parse(w.get_waypoint_json)
     assert_equal(result, expected)
   end
@@ -36,12 +45,12 @@ class TestGis < Test::Unit::TestCase
     ]
 
     t = Track.new([ts1, ts2], "track 1")
-    expected = JSON.parse('{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}}')
+    expected = JSON.parse(EXAMPLE_JSONS[3])
     result = JSON.parse(t.get_track_json)
     assert_equal(expected, result)
 
     t = Track.new([ts3], "track 2")
-    expected = JSON.parse('{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}')
+    expected = JSON.parse(EXAMPLE_JSONS[4])
     result = JSON.parse(t.get_track_json)
     assert_equal(expected, result)
   end
@@ -67,7 +76,7 @@ class TestGis < Test::Unit::TestCase
 
     w = World.new("My Data", [w, w2, t, t2])
 
-    expected = JSON.parse('{"type": "FeatureCollection","features": [{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}},{"type": "Feature","properties": {"title": "store","icon": "dot"},"geometry": {"type": "Point","coordinates": [-121.5,45.6]}},{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}},{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}]}')
+    expected = JSON.parse(EXAMPLE_JSONS[5])
     result = JSON.parse(w.to_geojson)
     assert_equal(expected, result)
   end
