@@ -62,4 +62,28 @@ class TestGis < Test::Unit::TestCase
     result = JSON.parse(@world.to_geojson)
     assert_equal(expected, result)
   end
+
+  def test_waypoint_without_title
+    expected = JSON.parse(EXAMPLE_JSONS[2])
+    result = JSON.parse(@w_2.get_waypoint_json)
+    assert_equal(result, expected)
+  end
+
+  def test_track_creation
+    expected = JSON.parse(EXAMPLE_JSONS[3])
+    result = JSON.parse(@t.get_track_json)
+    assert_equal(result, expected)
+  end
+
+  def test_second_track_creation
+    expected = JSON.parse(EXAMPLE_JSONS[4])
+    result = JSON.parse(@t2.get_track_json)
+    assert_equal(result, expected)
+  end
+
+  def test_world_creation
+    expected = JSON.parse(EXAMPLE_JSONS[5])
+    result = JSON.parse(@world.to_geojson)
+    assert_equal(result, expected)
+  end
 end
