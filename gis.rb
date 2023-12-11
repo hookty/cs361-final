@@ -1,15 +1,13 @@
 #!/usr/bin/env ruby
 
 class Track
+  attr_accessor :name, :segments
+
   def initialize(segments, name=nil)
     @name = name
-    segment_objects = []
-    segments.each do |s|
-      segment_objects.append(TrackSegment.new(s))
-    end
-    # set segments to segment_objects
-    @segments = segment_objects
+    @segments = segments.map { |s| TrackSegment.new(s) }
   end
+
   def get_track_json
     json = {
       "type" => "Feature",
@@ -22,6 +20,7 @@ class Track
     JSON.generate(json)
   end
 end
+
 class TrackSegment
   attr_reader :coordinates
   def initialize(coordinates)
