@@ -25,4 +25,6 @@ def pretty_print(j)
     end
 end
 
-pretty_print(ARGF.read)
+if __FILE__ == $0
+    pretty_print(ARGF.read)
+end

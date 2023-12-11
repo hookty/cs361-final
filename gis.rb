@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require_relative 'pretty_print.rb'
+
 class Track
   attr_accessor :name, :segments
 
@@ -116,10 +118,9 @@ def main()
 
   world = World.new("My Data", [w, w2, t, t2])
 
-  puts world.to_geojson()
+  pretty_print(world.to_geojson)
 end
 
 if File.identical?(__FILE__, $0)
   main()
 end
-
