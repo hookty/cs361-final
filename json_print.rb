@@ -2,6 +2,8 @@
 
 require 'json'
 
-puts JSON.generate(JSON.parse(ARGF.read), array_nl: "\n", object_nl: "\n", indent: "    ")
+def print_json(input)
+  puts JSON.generate(JSON.parse(input), array_nl: "\n", object_nl: "\n", indent: "    ")
+end
 
-
+puts pretty_print_json(ARGF.read)
