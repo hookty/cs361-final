@@ -97,7 +97,7 @@ class World
   end
 end
 
-def main()
+def main(pretty = false)
   w = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
   w2 = Waypoint.new(-121.5, 45.6, nil, "store", "dot")
   ts1 = [
@@ -118,9 +118,20 @@ def main()
 
   world = World.new("My Data", [w, w2, t, t2])
 
-  pretty_print(world.to_geojson)
+  if pretty
+    pretty_print(world.to_geojson)
+  else
+    puts world.to_geojson
+  end
 end
 
 if File.identical?(__FILE__, $0)
-  main()
+  #check for pretty print flag
+  pretty = false
+  if ARGV.length > 0
+    if ARGV[0] == "-p"
+      pretty = true
+    end
+  end
+  main(pretty)
 end
